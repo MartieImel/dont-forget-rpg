@@ -1,0 +1,21 @@
+{
+  "name": "dont-forget-rpg-backend",
+  "version": "1.0.0",
+  "description": "Backend do gerenciador de personagens e campanhas de Don't Forget RPG",
+  "main": "server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "smoke": "node scripts/smoke.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
+    "nanoid": "^3.3.7",
+    "pg": "^8.13.0"
+  }
+}

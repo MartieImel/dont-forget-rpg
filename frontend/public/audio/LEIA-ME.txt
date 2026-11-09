@@ -1,0 +1,13 @@
+Coloque aqui o arquivo de música da criação de personagem com o nome exato:
+
+    survey-theme.mp3
+
+Ou seja, o caminho final deve ser:
+    frontend/public/audio/survey-theme.mp3
+
+O site já está preparado pra tocar esse arquivo em loop assim que a pessoa
+clicar em "Iniciar" na tela do Survey Program, com um botão pra silenciar/
+reativar e um fade-out suave ao sair da tela. Não precisa mexer em nenhum
+código — só colocar o arquivo aqui com esse nome.
+
+Se o arquivo não existir, o site funciona normalmente, só sem música.

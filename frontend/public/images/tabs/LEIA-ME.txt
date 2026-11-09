@@ -1,0 +1,14 @@
+Coloque aqui os ícones que trocam de aba na ficha de personagem, com estes
+nomes exatos (PNG, fundo transparente funciona melhor):
+
+    personagem.png     — ícone da pessoa (aba Personagem: atributos/perícias)
+    equipamento.png    — ícone de espada+escudo (aba Equipamento & Status)
+    magias.png         — ícone de fogo (aba Magias e Habilidades)
+    info.png           — ícone de livro/pilar (aba Info & Anotações)
+
+Ou seja, por exemplo:
+    frontend/public/images/tabs/personagem.png
+
+Não precisa mexer em código. Enquanto os arquivos não existirem, cada aba
+mostra um emoji no lugar do ícone, então o site funciona normalmente antes
+de você adicionar os arquivos.

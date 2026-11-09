@@ -1,0 +1,22 @@
+# Blueprint do Render: só o BACKEND (API). O site fica na Vercel e o banco no Neon.
+# Passo a passo completo em DEPLOY.md.
+services:
+  - type: web
+    name: dfrpg-api
+    runtime: node
+    plan: free
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: DATABASE_URL # Neon: conexão POOLED (host com -pooler)
+        sync: false
+      - key: DATABASE_URL_UNPOOLED # Neon: conexão DIRETA (sem -pooler)
+        sync: false
+      - key: CORS_ORIGIN # URL do site na Vercel (no 1º deploy, use * e troque no passo 5)
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true

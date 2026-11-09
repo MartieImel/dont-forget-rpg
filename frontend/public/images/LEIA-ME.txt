@@ -1,0 +1,13 @@
+Coloque aqui o fundo (gif ou imagem) da tela de criação de personagem
+(Survey Program), com um destes nomes exatos — o site procura nessa ordem
+e usa o primeiro que encontrar:
+
+    survey-background.gif
+    survey-background.png
+    survey-background.jpg
+
+Ou seja, por exemplo:
+    frontend/public/images/survey-background.gif
+
+Não precisa mexer em nenhum código. Se nenhum desses arquivos existir, a
+tela usa o fundo padrão (gradiente escuro com ondulação) normalmente.
