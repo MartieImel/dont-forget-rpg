@@ -58,9 +58,25 @@ async function call(method, path, token, body, headers = {}) {
   check((await call("GET", `/campaigns/${camp.id}/escapes/${es.json.id}`, T)).json?.scene?.items?.length === 1, "cena de fuga lida de volta");
   check((await call("POST", `/campaigns/${camp.id}/escapes`, T, { scene: { items: [{ type: "nuke" }] } })).status === 400, "servidor recusa cena inválida");
 
+  // 3b) lançar a cena (encontro ao vivo): sala de espera -> entrar -> começar -> tempo real -> encerrar
+  const T2 = (await call("POST", "/auth/register", null, { username: u + "-j", password: "1234", displayName: "SmokeJog" })).json?.token;
+  const ch2 = await call("POST", "/characters", T2, { name: "SmokeJog", race: "Humano", classe: "Lutador", level: 1, attrs: { GRR: 2, ESP: 2, FRM: 2, CHR: 1, RPZ: 2, MRL: 1 } });
+  await call("POST", "/campaigns/join", T2, { code: camp.code, characterId: ch2.json.character.id });
+  const R = `/campaigns/${camp.id}/escape/runs`;
+  const run = await call("POST", R, T, { sceneId: es.json.id });
+  check(run.status === 201 && run.json.run.status === "lobby", "lançar cena: sala de espera aberta");
+  const rid = run.json?.run?.id;
+  check((await call("POST", `${R}/${rid}/join`, T2, { characterId: ch2.json.character.id })).status === 201, "jogador entra na sala com o personagem");
+  const go = await call("POST", `${R}/${rid}/start`, T, {});
+  check(go.status === 200 && go.json.run.status === "running", "mestre começa (contagem pelo relógio do servidor)");
+  check((await call("POST", `${R}/${rid}/state`, T2, { x: 240, y: 150 })).json?.players?.length === 1, "tempo real: jogador manda a posição e recebe o estado");
+  const cc = await call("POST", `${R}/${rid}/cancel`, T, {});
+  check(cc.status === 200 && (await call("GET", `${R}/${rid}`, T)).json?.run?.status === "cancelled", "mestre encerra o encontro");
+
   // limpeza do que dá pra apagar
   await call("DELETE", `/campaigns/${camp.id}/escapes/${es.json.id}`, T);
   await call("DELETE", `/characters/${ch.json.character.id}`, T);
+  await call("DELETE", `/characters/${ch2.json.character.id}`, T2);
 
   // 4) CORS: o site da Vercel consegue falar com a API?
   if (ORIGIN) {

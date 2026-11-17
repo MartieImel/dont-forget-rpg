@@ -3,6 +3,7 @@ const { requireAuth } = require("../middleware/auth");
 const ctrl = require("../controllers/campaignController");
 const board = require("../controllers/boardController");
 const escapes = require("../controllers/escapeController");
+const runs = require("../controllers/escapeRunController");
 const ah = require("../utils/asyncHandler");
 
 const router = express.Router();
@@ -36,4 +37,16 @@ router.post("/:id/escapes", ah(escapes.create));
 router.get("/:id/escapes/:sceneId", ah(escapes.getOne));
 router.put("/:id/escapes/:sceneId", ah(escapes.update));
 router.delete("/:id/escapes/:sceneId", ah(escapes.remove));
+
+// Lançar Cena de Fuga (encontro ao vivo)
+router.post("/:id/escape/runs", ah(runs.launch));
+router.get("/:id/escape/runs/:runId", ah(runs.getRun));
+router.get("/:id/escape/runs/:runId/scene", ah(runs.getScene));
+router.post("/:id/escape/runs/:runId/join", ah(runs.join));
+router.post("/:id/escape/runs/:runId/start", ah(runs.start));
+router.post("/:id/escape/runs/:runId/cancel", ah(runs.cancel));
+router.get("/:id/escape/runs/:runId/live", ah(runs.getLive));
+router.post("/:id/escape/runs/:runId/state", ah(runs.postState));
+router.post("/:id/escape/runs/:runId/hit", ah(runs.hit));
+router.post("/:id/escape/runs/:runId/finish", ah(runs.finishMine));
 module.exports = router;

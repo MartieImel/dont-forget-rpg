@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import EscapeBanner from "../components/EscapeBanner";
 import BattleBox from "../components/BattleBox";
 import RosterCard from "../components/RosterCard";
 import NpcCard from "../components/NpcCard";
@@ -78,6 +79,7 @@ export default function CampaignDashboardPage() {
 
   return (
     <div className="container stack">
+      <EscapeBanner campaignId={id} active={data.activeEscape} master={isMaster} />
       <div className="row-between">
         <div>
           <span className="eyebrow">{isMaster ? "VOCÊ É O MESTRE" : "VOCÊ ESTÁ JOGANDO"}</span>

@@ -74,6 +74,17 @@ export const api = {
   createEscape: (id, scene) => request(`/campaigns/${id}/escapes`, { method: "POST", body: { scene } }),
   updateEscape: (id, sceneId, scene) => request(`/campaigns/${id}/escapes/${sceneId}`, { method: "PUT", body: { scene } }),
   deleteEscape: (id, sceneId) => request(`/campaigns/${id}/escapes/${sceneId}`, { method: "DELETE" }),
+  // lançar cena de fuga (encontro ao vivo)
+  launchEscape: (id, sceneId) => request(`/campaigns/${id}/escape/runs`, { method: "POST", body: { sceneId } }),
+  getEscapeRun: (id, runId) => request(`/campaigns/${id}/escape/runs/${runId}`),
+  getEscapeScene: (id, runId) => request(`/campaigns/${id}/escape/runs/${runId}/scene`),
+  joinEscape: (id, runId, characterId) => request(`/campaigns/${id}/escape/runs/${runId}/join`, { method: "POST", body: { characterId } }),
+  startEscape: (id, runId) => request(`/campaigns/${id}/escape/runs/${runId}/start`, { method: "POST" }),
+  cancelEscape: (id, runId) => request(`/campaigns/${id}/escape/runs/${runId}/cancel`, { method: "POST" }),
+  getEscapeLive: (id, runId) => request(`/campaigns/${id}/escape/runs/${runId}/live`),
+  postEscapeState: (id, runId, x, y) => request(`/campaigns/${id}/escape/runs/${runId}/state`, { method: "POST", body: { x, y } }),
+  postEscapeHit: (id, runId, t) => request(`/campaigns/${id}/escape/runs/${runId}/hit`, { method: "POST", body: { t } }),
+  finishEscape: (id, runId) => request(`/campaigns/${id}/escape/runs/${runId}/finish`, { method: "POST" }),
 };
 
 export function setToken(token) {

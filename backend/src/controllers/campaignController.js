@@ -1,6 +1,7 @@
 const { nanoid, customAlphabet } = require("nanoid");
 const { pool } = require("../db");
 const { serialize: serializeChar } = require("./characterController");
+const { activeEscape } = require("../utils/escapeRuns");
 
 const codeAlphabet = customAlphabet("ABCDEFGHJKLMNPQRSTUVWXYZ23456789", 6);
 
@@ -156,6 +157,7 @@ async function getState(req, res) {
     ownersByCharacterId: owners,
     npcs,
     log: log.rows,
+    activeEscape: await activeEscape(campaign.id),
   });
 }
 

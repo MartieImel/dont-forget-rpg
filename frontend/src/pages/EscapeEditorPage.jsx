@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import BattleBox from "../components/BattleBox";
+import EscapeBanner from "../components/EscapeBanner";
 import EscapePlayer from "../components/EscapePlayer";
 import { api } from "../api";
 import { advance, checkBeatable, previewRun } from "../escape/engine.js";
@@ -43,6 +44,7 @@ export default function EscapeEditorPage() {
   const navigate = useNavigate();
 
   const [role, setRole] = useState(null);
+  const [activeEscape, setActiveEscape] = useState(null);
   const [scene, setScene] = useState(blankScene);
   const [sceneId, setSceneId] = useState(null);
   const [dirty, setDirty] = useState(false);
@@ -79,7 +81,7 @@ export default function EscapeEditorPage() {
   }, [id]);
 
   useEffect(() => {
-    api.getBoard(id).then((d) => setRole(d.role)).catch(() => setRole("erro"));
+    api.getBoard(id).then((d) => { setRole(d.role); setActiveEscape(d.activeEscape); }).catch(() => setRole("erro"));
     refreshLibrary();
   }, [id, refreshLibrary]);
 
@@ -323,6 +325,16 @@ export default function EscapeEditorPage() {
     }
   }
 
+  async function launchScene(sid) {
+    if (sid === sceneId && dirty && !confirm("Há alterações não salvas: será lançada a versão SALVA da cena. Continuar?")) return;
+    try {
+      const r = await api.launchEscape(id, sid);
+      navigate(`/campaigns/${id}/fuga/ao-vivo/${r.run.id}`);
+    } catch (err) {
+      say("err", err.message);
+    }
+  }
+
   function exportJson() {
     const res = sanitizeScene(scene);
     const blob = new Blob([JSON.stringify(res.scene, null, 2)], { type: "application/json" });
@@ -388,6 +400,7 @@ export default function EscapeEditorPage() {
         </div>
       </div>
 
+      <EscapeBanner campaignId={id} active={activeEscape} master />
       {msg && <p className={msg.kind === "ok" ? "hint" : "error-text"} role="alert" style={msg.kind === "ok" ? { color: "var(--accent-green)" } : undefined}>{msg.text}</p>}
 
       <div className="escape-editor">
@@ -572,6 +585,7 @@ export default function EscapeEditorPage() {
                 <div key={s.id} className={`ed-row ${s.id === sceneId ? "on" : ""}`} data-scene-id={s.id}>
                   <button className="ed-link" onClick={() => openScene(s.id)}>{s.name}</button>
                   <span className="muted">{s.itemCount} itens</span>
+                  <button className="btn btn-sm btn-gold" onClick={() => launchScene(s.id)} disabled={!!activeEscape} title={activeEscape ? "Já há uma cena em andamento" : "Abrir sala de espera para os jogadores"}>Lançar</button>
                   <button className="btn btn-sm btn-danger" onClick={() => removeScene(s.id, s.name)} aria-label={`Excluir ${s.name}`}>×</button>
                 </div>
               ))}

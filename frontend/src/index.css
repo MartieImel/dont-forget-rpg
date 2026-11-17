@@ -1003,3 +1003,15 @@ textarea:focus {
 .ed-row.on { border-color: var(--accent-gold); }
 .ed-link { background: none; border: 0; color: inherit; text-align: left; padding: 0; cursor: pointer; font: inherit; }
 .ed-link:hover { color: var(--accent-gold); }
+
+/* ---------- Cena de Fuga ao vivo ---------- */
+.escape-result-soft { inset: auto 0 0 0; padding: 10px; background: rgba(0, 0, 0, 0.6); pointer-events: none; }
+.escape-result-soft strong { font-size: 20px; }
+.escape-hp.small { height: 8px; width: 120px; border-width: 1px; }
+.live-list { display: flex; flex-direction: column; gap: 6px; }
+.live-row { display: flex; align-items: center; gap: 10px; font-size: 12px; }
+.live-row > span:first-child { min-width: 110px; }
+.live-table { width: 100%; border-collapse: collapse; font-size: 12px; margin: 10px 0; }
+.live-table th, .live-table td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--border); }
+.live-table tr.me td { color: var(--accent-gold); }
+.live-banner { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 14px; border: 2px solid var(--accent-gold); background: rgba(244, 201, 93, 0.08); font-size: 13px; }

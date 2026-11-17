@@ -8,6 +8,7 @@
 const { nanoid } = require("nanoid");
 const { pool } = require("../db");
 const { findCampaign, isMaster, isMember } = require("./campaignController");
+const { activeEscape } = require("../utils/escapeRuns");
 
 const MIN_DIM = 4;
 const MAX_DIM = 60;
@@ -119,7 +120,7 @@ async function getBoard(req, res) {
   if (!(await isMember(campaign, req.user.id))) return res.status(403).json({ error: "Você não faz parte dessa campanha." });
   const master = isMaster(campaign, req.user.id);
 
-  const out = { board: null, tokens: [], role: master ? "mestre" : "jogador", moveBase: campaign.moveBase, userId: req.user.id };
+  const out = { board: null, tokens: [], role: master ? "mestre" : "jogador", moveBase: campaign.moveBase, userId: req.user.id, activeEscape: await activeEscape(campaign.id) };
 
   if (campaign.activeBoardId) {
     const b = await pool.query(`SELECT * FROM boards WHERE id = $1`, [campaign.activeBoardId]);

@@ -115,8 +115,25 @@ Por baixo há um motor de simulação puro e determinístico (`frontend/src/esca
 uma função do tempo, então vários aparelhos podem rodar a mesma cena sincronizados só sabendo "começou em tal instante".
 Os testes rodam sem instalar nada extra: `cd frontend && npm run test:engine`.
 
-**Ainda não existe:** o mestre **lançar** a cena para os jogadores da campanha (com o HP real das fichas e o início
-sincronizado). É o próximo passo.
+### Lançar para os jogadores (ao vivo)
+
+No tabuleiro, painel **Lançar cena de fuga** (ou o botão **Lançar** na biblioteca do editor):
+
+1. Escolha a cena e clique **Lançar**: abre uma **sala de espera**. Os jogadores veem um aviso (no tabuleiro e na tela da
+   campanha) e **entram com o personagem**, com o HP real da ficha.
+2. Quando todos entraram, o mestre clica **Começar**: contagem de 4 s pelo **relógio do servidor**, para todos começarem juntos.
+3. Todos jogam a mesma cena e veem **as almas dos outros** (com o nome). O mestre acompanha tudo e o HP de cada um.
+4. Cada acerto desconta o **dano fixo da cena** do **HP da ficha**, no servidor (o tabuleiro mostra na hora). O encontro termina
+   sozinho (todos terminaram ou caíram, ou o tempo acabou) e aparece a **tabela de resultado**. O mestre pode **Encerrar agora**.
+
+Regras e limites que valem saber:
+- A cena lançada é uma **cópia**: editar a biblioteca durante a sessão não muda o encontro em andamento.
+- Um encontro por vez por campanha. Só participa quem entrou **antes** do "Começar".
+- Cada aparelho detecta o acerto da **própria** alma. O servidor confere a janela de tempo e limita o ritmo dos acertos, mas **não
+  consegue provar** que o acerto aconteceu (um jogador malicioso poderia tentar mentir; para uma mesa de amigos costuma bastar).
+- Os **perseguidores** dependem da alma de cada jogador, então só aparecem na tela de quem está jogando (não na do mestre).
+- As posições das almas ficam na memória do servidor (efêmeras); HP, acertos e resultado vão para o banco.
+- Teste de API do lançamento: `cd backend && npm run test:runs` (com o servidor no ar; leva ~30 s porque espera relógios reais).
 
 ## Importar ficha do Survey Program (.txt)
 

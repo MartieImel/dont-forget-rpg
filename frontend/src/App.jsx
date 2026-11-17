@@ -12,6 +12,7 @@ import CampaignDashboardPage from "./pages/CampaignDashboardPage";
 import BoardPage from "./pages/BoardPage";
 import EscapeLabPage from "./pages/EscapeLabPage";
 import EscapeEditorPage from "./pages/EscapeEditorPage";
+import EscapeLivePage from "./pages/EscapeLivePage";
 import { useAuth } from "./context/AuthContext";
 
 function RootRedirect() {
@@ -67,6 +68,14 @@ export default function App() {
           element={
             <RequireAuth>
               <CampaignCreatePage />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/campaigns/:id/fuga/ao-vivo/:runId"
+          element={
+            <RequireAuth>
+              <EscapeLivePage />
             </RequireAuth>
           }
         />

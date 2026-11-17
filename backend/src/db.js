@@ -178,6 +178,37 @@ async function initSchema() {
       "createdAt" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
       "updatedAt" TIMESTAMPTZ NOT NULL DEFAULT NOW()
     )`);
+  // ---- Lançar Cena de Fuga (encontros ao vivo) ----
+  await db.query(`
+    CREATE TABLE IF NOT EXISTS escape_runs (
+      id TEXT PRIMARY KEY,
+      "campaignId" TEXT NOT NULL REFERENCES campaigns(id) ON DELETE CASCADE,
+      "sceneId" TEXT,
+      "sceneName" TEXT NOT NULL,
+      scene TEXT NOT NULL,
+      damage INTEGER NOT NULL,
+      duration DOUBLE PRECISION NOT NULL,
+      status TEXT NOT NULL DEFAULT 'lobby',
+      "startsAt" BIGINT,
+      "createdAt" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      "endedAt" TIMESTAMPTZ
+    )`);
+  await db.query(`
+    CREATE TABLE IF NOT EXISTS escape_run_players (
+      "runId" TEXT NOT NULL REFERENCES escape_runs(id) ON DELETE CASCADE,
+      "characterId" TEXT NOT NULL,
+      "userId" TEXT NOT NULL,
+      name TEXT NOT NULL,
+      "hpStart" INTEGER NOT NULL,
+      hp INTEGER NOT NULL,
+      "hpMax" INTEGER NOT NULL,
+      hits INTEGER NOT NULL DEFAULT 0,
+      "damageTaken" INTEGER NOT NULL DEFAULT 0,
+      result TEXT NOT NULL DEFAULT 'joined',
+      "lastHitAt" BIGINT,
+      "joinedAt" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      PRIMARY KEY ("runId", "characterId")
+    )`);
   await db.query(`ALTER TABLE campaigns ADD COLUMN IF NOT EXISTS "moveBase" INTEGER NOT NULL DEFAULT 3`);
   } finally {
     await db.end();

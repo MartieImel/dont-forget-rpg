@@ -7,7 +7,8 @@
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js",
-    "smoke": "node scripts/smoke.js"
+    "smoke": "node scripts/smoke.js",
+    "test:runs": "node tests/runs.test.mjs"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

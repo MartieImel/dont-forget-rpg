@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import BattleBox from "../components/BattleBox";
+import EscapeBanner from "../components/EscapeBanner";
 import { api } from "../api";
 import { usePolling } from "../hooks/usePolling";
 import { cellFromPoint, reachableCells } from "../boardMath";
@@ -40,6 +41,23 @@ export default function BoardPage() {
   const board = data ? data.board : null;
   const tokens = data ? data.tokens : [];
   const master = !!data && data.role === "mestre";
+  const [escapeScenes, setEscapeScenes] = useState([]);
+  const [escapeSceneId, setEscapeSceneId] = useState("");
+  useEffect(() => {
+    if (!master) return;
+    api.listEscapes(id).then((r) => {
+      setEscapeScenes(r.scenes);
+      setEscapeSceneId((prev) => prev || (r.scenes[0] ? r.scenes[0].id : ""));
+    }).catch(() => {});
+  }, [master, id]);
+  async function launchEscape() {
+    try {
+      const r = await api.launchEscape(id, escapeSceneId);
+      navigate(`/campaigns/${id}/fuga/ao-vivo/${r.run.id}`);
+    } catch (err) {
+      setMsg(err.message);
+    }
+  }
   const selected = tokens.find((t) => t.id === selectedId) || null;
   const canMove = (t) => !!t && !!data && (master || (t.kind === "character" && t.ownerId === data.userId));
 
@@ -198,6 +216,7 @@ export default function BoardPage() {
       </div>
 
       {msg && <p className="error-text" role="alert">{msg}</p>}
+      <EscapeBanner campaignId={id} active={data.activeEscape} master={master} />
 
       <div className="board-layout">
         <div>
@@ -278,6 +297,24 @@ export default function BoardPage() {
         </div>
 
         <aside className="stack">
+          {master && !data.activeEscape && (
+            <BattleBox tight accent="gold">
+              <h3>LANÇAR CENA DE FUGA</h3>
+              {escapeScenes.length === 0 ? (
+                <p className="muted" style={{ fontSize: 12 }}>Nenhuma cena salva. Monte uma no Editor de Fugas.</p>
+              ) : (
+                <div className="stack" style={{ gap: 8 }}>
+                  <select value={escapeSceneId} onChange={(e) => setEscapeSceneId(e.target.value)} data-testid="launch-select">
+                    {escapeScenes.map((s) => (
+                      <option key={s.id} value={s.id}>{s.name} (dano {s.damage}, {Math.round(s.duration)}s)</option>
+                    ))}
+                  </select>
+                  <button className="btn btn-sm btn-gold" onClick={launchEscape} disabled={!escapeSceneId}>Lançar</button>
+                  <span className="hint">Abre uma sala de espera: os jogadores entram com seus personagens e você começa quando quiser.</span>
+                </div>
+              )}
+            </BattleBox>
+          )}
           <BattleBox tight>
             <h3>FICHA SELECIONADA</h3>
             {selected ? (

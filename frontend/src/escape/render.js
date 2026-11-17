@@ -81,6 +81,33 @@ function arrow(ctx, x1, y1, x2, y2, color) {
   ctx.fill();
 }
 
+// almas dos outros jogadores (ao vivo): coração translúcido com o nome; caído vira um X cinza
+function drawOthers(ctx, others) {
+  ctx.save();
+  ctx.textAlign = "center";
+  ctx.font = "7px monospace";
+  for (const o of others) {
+    if (o.x === null || o.y === null || o.x === undefined) continue;
+    const dead = o.result === "dead" || o.hp <= 0;
+    ctx.globalAlpha = dead ? 0.5 : 0.65;
+    if (dead) {
+      ctx.strokeStyle = "#9a9a9a";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(o.x - 5, o.y - 5); ctx.lineTo(o.x + 5, o.y + 5);
+      ctx.moveTo(o.x + 5, o.y - 5); ctx.lineTo(o.x - 5, o.y + 5);
+      ctx.stroke();
+    } else {
+      ctx.fillStyle = "#5ec8d8";
+      heart(ctx, o.x, o.y, 6);
+    }
+    ctx.globalAlpha = 0.9;
+    ctx.fillStyle = "#cfe9ee";
+    ctx.fillText(String(o.name || "").slice(0, 10), o.x, o.y - 11);
+  }
+  ctx.restore();
+}
+
 // camadas só do editor: marcadores dos itens que ainda não apareceram, item selecionado e guia de arrasto
 function drawEditLayer(ctx, scene, run, view) {
   const { w, h } = scene.box;
@@ -203,6 +230,7 @@ export function drawScene(ctx, scene, run, view = {}) {
   ctx.strokeRect(1.5, 1.5, w - 3, h - 3);
   ctx.restore();
 
+  if (view.others) drawOthers(ctx, view.others);
   if (view.edit) drawEditLayer(ctx, scene, run, view.edit);
 
   if (flash > 0) {

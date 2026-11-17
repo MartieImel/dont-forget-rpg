@@ -94,7 +94,7 @@ Em **outro terminal**, também em `backend/`:
 ```bash
 npm run smoke
 ```
-- [ ] Esperado: `13/13 verificações passaram — TUDO OK` (o teste de CORS só roda no Passo 6).
+- [ ] Esperado: `18/18 verificações passaram — TUDO OK` (o teste de CORS só roda no Passo 6).
 
 Na primeira subida a API cria as 8 tabelas sozinha. Se estiver tudo certo, pare o `npm run dev` (Ctrl+C).
 
@@ -186,7 +186,7 @@ BASE_URL=https://SUA-API.onrender.com FRONTEND_ORIGIN=https://SEU-SITE.vercel.ap
 $env:BASE_URL="https://SUA-API.onrender.com"; $env:FRONTEND_ORIGIN="https://SEU-SITE.vercel.app"; npm run smoke
 ```
 
-- [ ] Esperado: `15/15 verificações passaram — TUDO OK`.
+- [ ] Esperado: `20/20 verificações passaram — TUDO OK`.
   - Se a API estiver dormindo, ele espera até ~100 s por ela.
   - Ele cria um usuário `smoke-...` e uma campanha "smoke" de teste (não dá para apagá-los pela API; ignore).
   - Se aparecer *"CORS aceita QUALQUER site"*, você ainda está com `*`: volte ao Passo 5.
@@ -199,6 +199,7 @@ $env:BASE_URL="https://SUA-API.onrender.com"; $env:FRONTEND_ORIGIN="https://SEU-
 - [ ] Criar uma campanha e abrir o **Tabuleiro**
 - [ ] No **Editor de Fugas**, montar uma cena, **Salvar**, recarregar a página e abrir da biblioteca
 - [ ] Sair, entrar de novo e conferir que o personagem continua lá (é o banco da Neon funcionando)
+- [ ] **Lançar uma Cena de Fuga** com duas contas (uma mestre, uma jogadora, em dois navegadores ou uma janela anônima): lançar, entrar, começar, jogar e ver o HP da ficha cair
 
 ---
 
@@ -209,6 +210,15 @@ $env:BASE_URL="https://SUA-API.onrender.com"; $env:FRONTEND_ORIGIN="https://SEU-
 - **Trocar o `JWT_SECRET`** desloga todo mundo (os logins antigos deixam de valer).
 - **Senha do banco vazou?** Neon → seu projeto → Roles → redefina a senha, rode `neon env pull` e atualize as duas variáveis no Render.
 - **Nunca** suba `.env.local` para o GitHub nem cole strings de conexão em chats ou prints.
+
+### Sobre as Cenas de Fuga ao vivo (para saber antes da primeira sessão)
+
+- Durante a cena, **cada jogador faz ~4 requisições por segundo** à API (posição das almas). Para uma mesa de amigos o plano
+  grátis do Render aguenta bem, e isso também mantém a API acordada enquanto o jogo acontece.
+- As **posições das almas ficam na memória da API** (só HP, acertos e resultado vão para o banco). Isso funciona porque o plano
+  grátis tem **uma única instância**. Se um dia você escalar para várias instâncias, esse trecho precisa mudar.
+- Se a API **reiniciar no meio de uma cena**, o encontro continua (está no banco), mas as almas somem da tela por alguns instantes
+  até voltarem a ser enviadas. Para evitar, não faça deploy durante a sessão.
 
 ---
 
@@ -239,5 +249,5 @@ $env:BASE_URL="https://SUA-API.onrender.com"; $env:FRONTEND_ORIGIN="https://SEU-
 - [ ] Render: API **Live**, `/api/health` responde, logs sem erro
 - [ ] Vercel: site no ar com `VITE_API_URL` terminando em `/api`
 - [ ] Render: `CORS_ORIGIN` = URL exata do site
-- [ ] `npm run smoke` com `15/15`
+- [ ] `npm run smoke` com `20/20`
 - [ ] Roteiro do navegador feito
